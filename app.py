@@ -1,5 +1,6 @@
 from flask import Flask,redirect,url_for,render_template,request,flash,get_flashed_messages
 from module.database import Database
+from math import ceil
 
 app=Flask(__name__,static_url_path='/static')
 app.secret_key= 'secretuserform'
@@ -12,9 +13,24 @@ def home():
     if request.method == 'POST':
         fname = request.form['fname']
         return redirect(url_for('search',fname=fname))
-    else:
-        data = db.readuser(None)
-        return render_template('home_utf8.html',userlist=data,messages=get_flashed_messages())
+
+    per_page = 2  # Number of items per page
+    page = int(request.args.get('page', 1))
+
+    data = db.readuser(None)
+
+    total_users = len(data)
+    total_pages = ceil(total_users / per_page)
+
+    start_index = (page - 1) * per_page
+    end_index = start_index + per_page
+    userlist = data[start_index:end_index]
+
+    pagination = {
+        'current_page': page,
+        'pages': range(1, total_pages + 1)
+    }
+    return render_template('home_utf8.html',userlist=userlist,messages=get_flashed_messages(),pagination=pagination)
 
 @app.route('/search/<string:fname>/')
 def search(fname):
