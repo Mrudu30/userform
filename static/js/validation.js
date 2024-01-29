@@ -57,7 +57,7 @@ $(document).ready(function(){
 
     function validate_email(){
         var email_ch = jQuery('#email').val()
-		if(email_ch.trim === '')
+		if(email_ch.trim() == '')
 		{
             console.log('email if false')
 			email_span.text("This field is required.");
@@ -81,7 +81,7 @@ $(document).ready(function(){
     function validate_mobile_number(){
 		var mobileNumber = jQuery("#mobile_number").val();
 
-        if (mobileNumber.trim() === '') {
+        if (mobileNumber.trim() == '') {
             console.log('mob trim false')
             mobile_number_span.text("This field is required.");
             return false;
@@ -110,6 +110,12 @@ $(document).ready(function(){
 			return true;
 		}
 	}
+
+    // function check_email_exists(){
+    //     x = jQuery(#email).val().trim()
+
+    //     if (x)
+    // }
 
     //  Onsubmit final validation check
     adduserform.submit(

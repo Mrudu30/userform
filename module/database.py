@@ -6,40 +6,59 @@ class Database:
     def connect(self):
        return p.connect(host="localhost",database="forms",user="root",password="",charset = "utf8mb4")
 
-    # create user
-    def create_user(self,data,list_hobbies):
-        con = Database.connect(self)
-        cursor = con.cursor()
+    # check email availability
+    def email_available(self,email):
+        conn = Database.connect(self)
+        cursor = conn.cursor()
 
         try:
-            list_hobbies_str=','.join(list_hobbies)
-            # print(data)
-            cursor.execute(
-                'INSERT INTO user(f_name,l_name,email,mobno,gender,hobbies,country,address) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)',
-                (data['fname'],data['lname'],data['email'],data['mobno'],data['gender'],list_hobbies_str,data['country'],data['addr'])
-                )
-            # print(
-            #     'INSERT INTO user(f_name,l_name,email,mobno,gender,hobbies,country,address) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)',
-            #     (data['fname'],data['lname'],data['email'],data['mobno'],data['gender'],data['hobbies'],data['country'],data['addr'])
-            #     )
-            con.commit()
-            return True
-        except:
-            con.rollback()
+            cursor.execute('SELECT * FROM user WHERE email=%s',(email,))
+            cursor.fetchall()
             return False
+        except:
+            return True
         finally:
+            conn.close()
+
+    # create user
+    def create_user(self,data,list_hobbies,email):
+        con = Database.connect(self)
+        cursor = con.cursor()
+        if Database.email_available(self,email=email) == True:
+            try:
+                list_hobbies_str=','.join(list_hobbies)
+                # print(data)
+                cursor.execute(
+                    'INSERT INTO user(f_name,l_name,email,mobno,gender,hobbies,country,address) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)',
+                    (data['fname'],data['lname'],data['email'],data['mobno'],data['gender'],list_hobbies_str,data['country'],data['addr'])
+                    )
+                # print(
+                #     'INSERT INTO user(f_name,l_name,email,mobno,gender,hobbies,country,address) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)',
+                #     (data['fname'],data['lname'],data['email'],data['mobno'],data['gender'],data['hobbies'],data['country'],data['addr'])
+                #     )
+                con.commit()
+                return True
+            except:
+                con.rollback()
+                return False
+            finally:
+                con.close()
+        else:
+            message = 'Email Already Taken'
+            print(message)
             con.close()
+            return message
 
     # read user values
-    def readuser(self,id):
+    def readuser(self,fname):
         con = Database.connect(self)
         cursor = con.cursor()
 
         try:
-            if id==None:
-                cursor.execute('SELECT * FROM user')
+            if fname is None:
+                cursor.execute('SELECT * FROM user order by id asc')
             else:
-                cursor.execute('SELECT * FROM user WHERE id=%s',(id,))
+                cursor.execute('SELECT * FROM user WHERE f_name LIKE %s ORDER BY id ASC', ('%' + fname + '%',))
             return cursor.fetchall()
         except:
             con.rollback()

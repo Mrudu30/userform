@@ -6,21 +6,36 @@ app.secret_key= 'secretuserform'
 
 db = Database()
 
-@app.route('/')
+@app.route('/search/')
+@app.route('/',methods=['POST','GET'])
 def home():
-    data = db.readuser(None)
+    if request.method == 'POST':
+        fname = request.form['fname']
+        return redirect(url_for('search',fname=fname))
+    else:
+        data = db.readuser(None)
+        return render_template('home_utf8.html',userlist=data,messages=get_flashed_messages())
+
+@app.route('/search/<string:fname>/')
+def search(fname):
+    if fname == '':
+        data = db.readuser(None)
+    else:
+        data = db.readuser(fname)
+
     return render_template('home_utf8.html',userlist=data,messages=get_flashed_messages())
 
 # Add User routes
 @app.route("/add")
-def addfr():
+def adduserform():
     return render_template('addUser.html')
 
 @app.route("/adduser",methods=['POST'])
 def adduser():
     list_hobbies = request.form.getlist('hobbies')
+    email = request.form['email']
     if request.method == 'POST':
-        if db.create_user(request.form,list_hobbies=list_hobbies):
+        if db.create_user(request.form,list_hobbies=list_hobbies,email=email):
             flash('New User Created!')
         else:
             flash('New User Could not be created')

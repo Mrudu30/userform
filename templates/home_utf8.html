@@ -9,8 +9,17 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/_all-skins.min.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dataTables.bootstrap.css')}}">
 </head>
+
 <body>
     <a name="" id="" class="btn btn-primary" href="/add" role="button">Add User</a>
+    <form action="/" method="post">
+        <div class="form-group">
+          <label for="">Search: </label>
+          <input type="text" name="fname" placeholder="search" class="form-input">
+          <input type="submit" value="Search" class="btn btn-primary">
+        </div>
+        btn
+    </form>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <ul>
