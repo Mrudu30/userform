@@ -41,7 +41,7 @@
                 <tr>
                     <th>
                         First Name
-                        <button id="fnamebtn"><span class="glyphicon glyphicon-sort-by-attributes"></span></button>
+                        <button><span id="fnamebtn" class="glyphicon glyphicon-sort-by-attributes"></span></button>
                     </th>
                     <th>Last Name</th>
                     <th>Email</th>
@@ -80,11 +80,25 @@
     <div class="row">
         <nav aria-label="Page navigation">
             <ul class="pagination">
+                {% if pagination.current_page > 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('home', page=pagination.current_page-1) }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
                 {% for page in pagination.pages %}
                     <li class="page-item {% if page == pagination.current_page %}active{% endif %}">
                         <a class="page-link" href="{{ url_for('home', page=page) }}">{{ page }}</a>
                     </li>
                 {% endfor %}
+                {% if pagination.current_page < pagination.pages|length %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('home', page=pagination.current_page+1) }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </nav>
     </div>

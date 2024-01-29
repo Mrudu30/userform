@@ -14,7 +14,7 @@ def home():
         fname = request.form['fname']
         return redirect(url_for('search',fname=fname))
 
-    per_page = 2  # Number of items per page
+    per_page = 1  # Number of items per page
     page = int(request.args.get('page', 1))
 
     data = db.readuser(None)
@@ -69,11 +69,12 @@ def update(id):
 @app.route("/updated-user/<int:id>",methods=['POST'])
 def updateuser(id):
     list_hobbies = request.form.getlist('hobbies')
+    email = request.form['email']
     data = dict(request.form)
     # print(list_hobbies)
     # print(data)
     if request.method == 'POST':
-        if db.updateUser(id=id,data=data,list_hobbies=list_hobbies):
+        if db.updateUser(id=id,data=data,list_hobbies=list_hobbies,email=email):
             flash('User Updated')
         else:
             flash('User Not updated')

@@ -24,6 +24,7 @@ class Database:
     def create_user(self,data,list_hobbies,email):
         con = Database.connect(self)
         cursor = con.cursor()
+
         if Database.email_available(self,email=email) == True:
             try:
                 list_hobbies_str=','.join(list_hobbies)
@@ -47,7 +48,7 @@ class Database:
             message = 'Email Already Taken'
             print(message)
             con.close()
-            return message
+            return False
 
     # read user values
     def readuser(self,fname):
@@ -67,26 +68,31 @@ class Database:
             con.close()
 
     # update user values
-    def updateUser(self,id,data,list_hobbies):
+    def updateUser(self,id,data,list_hobbies,email):
         con = Database.connect(self)
         cursor = con.cursor()
         # print(data)
         # print(data['hobbies'])
-
-        try:
-            list_hobbies_str=','.join(list_hobbies)
-            # print('data reached here in try')
-            # print(data)
-            cursor.execute('UPDATE user set f_name=%s,l_name=%s,email=%s,mobno=%s,gender=%s,hobbies=%s,country=%s,address=%s WHERE id=%s',
-                           (data['fname'],data['lname'],data['email'],data['mobno'],data['gender'],list_hobbies_str,data['country'],data['addr'],id))
-            con.commit()
-            return True
-        except:
-            # print('data in except')
-            con.rollback()
-            return False
-        finally:
+        if Database.email_available(self,email=email) == True:
+            try:
+                list_hobbies_str=','.join(list_hobbies)
+                # print('data reached here in try')
+                # print(data)
+                cursor.execute('UPDATE user set f_name=%s,l_name=%s,email=%s,mobno=%s,gender=%s,hobbies=%s,country=%s,address=%s WHERE id=%s',
+                            (data['fname'],data['lname'],data['email'],data['mobno'],data['gender'],list_hobbies_str,data['country'],data['addr'],id))
+                con.commit()
+                return True
+            except:
+                # print('data in except')
+                con.rollback()
+                return False
+            finally:
+                con.close()
+        else:
+            message = 'Email Already Taken'
+            print(message)
             con.close()
+            return False
 
     # delete user
     def deleteUser(self,id):
