@@ -1,3 +1,4 @@
+import ast
 import pymysql as p
 
 class Database:
@@ -71,21 +72,22 @@ class Database:
             con.close()
 
     # sort function
-    def sort(self,resp):
+    def sort(self,order):
         con = Database.connect(self)
         cursor = con.cursor()
-        att = resp['resp']['att']
-        ord = resp['resp']['ord']
+        resp = ast.literal_eval(order)
+        att = resp[0]
+        ord = resp[1]
         try:
-            # print(att,ord)
+            print(att,ord)
             query=f'SELECT * FROM user ORDER BY {att} {ord}'
             cursor.execute(query)
-            # print(f'SELECT * FROM user ORDER BY {att} {ord}')
+            print(f'SELECT * FROM user ORDER BY {att} {ord}')
             print('query executed')
             return cursor.fetchall()
         except:
             con.rollback()
-            return False
+            return f'Not done'
         finally:
             con.close()
 
