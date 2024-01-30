@@ -11,17 +11,24 @@ db = Database()
 @app.route('/search/',methods=['POST','GET'])
 @app.route('/',methods=['POST','GET'])
 def home():
+    form_type = request.form.get('form_type')
+
     if request.method == 'POST':
-        fname = request.form['fname']
-        return redirect(url_for('search',fname=fname))
+        if form_type == 'search':
+            print(request.form)
+            fname = request.form['fname']
+            return redirect(url_for('search',fname=fname))
+        elif form_type == 'sort':
+            order = request.form['order']
+            print(order)
+            data = db.sort(order=order)
+            return render_template('home_utf8.html',userlist=data,messages=get_flashed_messages())
 
     # pagination
     per_page = 5  # Number of items per page
     page = int(request.args.get('page', 1))
 
     data = db.readuser(id=None,fname=None)
-
-
 
     total_users = len(data)
     total_pages = ceil(total_users / per_page)
@@ -40,11 +47,12 @@ def home():
 @app.route('/search/<string:fname>/')
 def search(fname):
     if fname == '':
-        data = db.readuser(f_name=None,id=None)
+        data = db.readuser(fname=None,id=None)
     else:
-        data = db.readuser(f_name=fname,id=None)
+        data = db.readuser(fname=fname,id=None)
 
     return render_template('home_utf8.html',userlist=data,messages=get_flashed_messages())
+
 
 # Add User routes
 @app.route("/add")

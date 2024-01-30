@@ -23,7 +23,30 @@
             <div class="form-group">
             <label for="search">Search: </label>
             <input type="text" name="fname" placeholder="search" class="form-input">
+            <input type="hidden" name="form_type" value="search">
             </div>
+        </form>
+        <form action="/" method="post" class="col-sm-6">
+            <select name="order" id="">
+                <optgroup label="First Name">
+                    <option value="['f_name','asc']">First Name: Ascending</option>
+                    <option value="['f_name','desc']">First Name: Descending</option>
+                </optgroup>
+                <optgroup label="Last Name">
+                    <option value="['l_name','asc']">Last Name: Ascending</option>
+                    <option value="['l_name','desc']">Last Name: Descending</option>
+                </optgroup>
+                <optgroup label="Email">
+                    <option value="['email','asc']">Email: Ascending</option>
+                    <option value="['email','desc']">Email: Descending</option>
+                </optgroup>
+                <optgroup label="Mobile No.">
+                    <option value="['mobno','asc']">Mobile No.: Ascending</option>
+                    <option value="['mobno','desc']">Mobile No.: Descending</option>
+                </optgroup>
+            </select>
+            <input type="hidden" name="form_type" value="sort">
+            <input type="submit" value="Filter">
         </form>
     </div>
 
