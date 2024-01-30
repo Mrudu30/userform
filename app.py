@@ -1,4 +1,4 @@
-from flask import Flask,redirect,url_for,render_template,request,flash,get_flashed_messages
+from flask import Flask,redirect,url_for,render_template,request,flash,get_flashed_messages,jsonify
 from module.database import Database
 from math import ceil
 
@@ -7,17 +7,21 @@ app.secret_key= 'secretuserform'
 
 db = Database()
 
-@app.route('/search/')
+# home route
+@app.route('/search/',methods=['POST','GET'])
 @app.route('/',methods=['POST','GET'])
 def home():
     if request.method == 'POST':
         fname = request.form['fname']
         return redirect(url_for('search',fname=fname))
 
-    per_page = 1  # Number of items per page
+    # pagination
+    per_page = 5  # Number of items per page
     page = int(request.args.get('page', 1))
 
-    data = db.readuser(None)
+    data = db.readuser(id=None,fname=None)
+
+
 
     total_users = len(data)
     total_pages = ceil(total_users / per_page)
@@ -32,12 +36,13 @@ def home():
     }
     return render_template('home_utf8.html',userlist=userlist,messages=get_flashed_messages(),pagination=pagination)
 
+# search route
 @app.route('/search/<string:fname>/')
 def search(fname):
     if fname == '':
-        data = db.readuser(None)
+        data = db.readuser(f_name=None,id=None)
     else:
-        data = db.readuser(fname)
+        data = db.readuser(f_name=fname,id=None)
 
     return render_template('home_utf8.html',userlist=data,messages=get_flashed_messages())
 
@@ -63,7 +68,7 @@ def adduser():
 # Update User Routes
 @app.route('/update/<int:id>')
 def update(id):
-    data = db.readuser(id)
+    data = db.readuser(id=id,fname=None)
     return render_template('updateUser.html',userinfo=data)
 
 @app.route("/updated-user/<int:id>",methods=['POST'])
@@ -85,7 +90,8 @@ def updateuser(id):
 # Delete User Routes
 @app.route("/delete/<int:id>")
 def delete(id):
-    data = db.readuser(id)
+    data = db.readuser(id=id,fname=None)
+    print(data)
     return render_template('deleteConfirmation.html',data=data)
 
 @app.route("/deleteUser/<int:id>",methods=['POST'])

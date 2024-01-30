@@ -51,15 +51,37 @@ class Database:
             return False
 
     # read user values
-    def readuser(self,fname):
+    def readuser(self,fname,id):
         con = Database.connect(self)
         cursor = con.cursor()
 
         try:
             if fname is None:
-                cursor.execute('SELECT * FROM user order by id asc')
+                if id is None:
+                    cursor.execute('SELECT * FROM user order by id asc')
+                else:
+                    cursor.execute('SELECT * FROM user WHERE id=%s',(id))
             else:
                 cursor.execute('SELECT * FROM user WHERE f_name LIKE %s ORDER BY id ASC', ('%' + fname + '%',))
+            return cursor.fetchall()
+        except:
+            con.rollback()
+            return False
+        finally:
+            con.close()
+
+    # sort function
+    def sort(self,resp):
+        con = Database.connect(self)
+        cursor = con.cursor()
+        att = resp['resp']['att']
+        ord = resp['resp']['ord']
+        try:
+            # print(att,ord)
+            query=f'SELECT * FROM user ORDER BY {att} {ord}'
+            cursor.execute(query)
+            # print(f'SELECT * FROM user ORDER BY {att} {ord}')
+            print('query executed')
             return cursor.fetchall()
         except:
             con.rollback()

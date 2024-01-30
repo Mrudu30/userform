@@ -1,5 +1,5 @@
 $(function(){
     $('#fnamebtn').on('click', function(){
-        console.log('button clicked')
+        console.log($('#ascdescval').val())
     })
 })
