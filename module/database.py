@@ -75,10 +75,12 @@ class Database:
     def sort(self,order):
         con = Database.connect(self)
         cursor = con.cursor()
-        resp = ast.literal_eval(order)
+        resp = order
+        # resp = ast.literal_eval(order)
         att = resp[0]
-        ord = resp[1]
+        ord = resp[1].upper()
         try:
+            # print(f'SELECT * FROM user ORDER BY {att} {ord}')
             print(att,ord)
             query=f'SELECT * FROM user ORDER BY {att} {ord}'
             cursor.execute(query)

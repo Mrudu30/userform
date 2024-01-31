@@ -11,6 +11,9 @@ db = Database()
 @app.route('/search/',methods=['POST','GET'])
 @app.route('/',methods=['POST','GET'])
 def home():
+    print(request.form)
+    data = db.readuser(id=None,fname=None)
+
     form_type = request.form.get('form_type')
 
     if request.method == 'POST':
@@ -19,16 +22,20 @@ def home():
             fname = request.form['fname']
             return redirect(url_for('search',fname=fname))
         elif form_type == 'sort':
+            ord = []
             order = request.form['order']
-            print(order)
-            data = db.sort(order=order)
-            return render_template('home_utf8.html',userlist=data,messages=get_flashed_messages())
+            filter = request.form['filter-order']
+            ord.append(order)
+            ord.append(filter)
+            # print("app\n",order)
+            data = db.sort(order=ord)
+            print(data)
 
     # pagination
     per_page = 5  # Number of items per page
     page = int(request.args.get('page', 1))
 
-    data = db.readuser(id=None,fname=None)
+    print(data)
 
     total_users = len(data)
     total_pages = ceil(total_users / per_page)
@@ -36,7 +43,7 @@ def home():
     start_index = (page - 1) * per_page
     end_index = start_index + per_page
     userlist = data[start_index:end_index]
-
+    print("\nuserlist\n",userlist)
     pagination = {
         'current_page': page,
         'pages': range(1, total_pages + 1)
@@ -52,7 +59,6 @@ def search(fname):
         data = db.readuser(fname=fname,id=None)
 
     return render_template('home_utf8.html',userlist=data,messages=get_flashed_messages())
-
 
 # Add User routes
 @app.route("/add")

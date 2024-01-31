@@ -26,27 +26,19 @@
             <input type="hidden" name="form_type" value="search">
             </div>
         </form>
-        <form action="/" method="post" class="col-sm-6">
-            <select name="order" id="">
-                <optgroup label="First Name">
-                    <option value="['f_name','asc']">First Name: Ascending</option>
-                    <option value="['f_name','desc']">First Name: Descending</option>
-                </optgroup>
-                <optgroup label="Last Name">
-                    <option value="['l_name','asc']">Last Name: Ascending</option>
-                    <option value="['l_name','desc']">Last Name: Descending</option>
-                </optgroup>
-                <optgroup label="Email">
-                    <option value="['email','asc']">Email: Ascending</option>
-                    <option value="['email','desc']">Email: Descending</option>
-                </optgroup>
-                <optgroup label="Mobile No.">
-                    <option value="['mobno','asc']">Mobile No.: Ascending</option>
-                    <option value="['mobno','desc']">Mobile No.: Descending</option>
-                </optgroup>
+        <form method="post" class="col-sm-6" id="filter-form">
+            <select name="order" id="order">
+                <option value="f_name">First Name</option>
+                <option value="l_name">Last Name</option>
+                <option value="email">Email</option>
+                <option value="mobno">Mobile No.</option>
             </select>
+            <!-- <input type="radio" name="filter-order" id="" value="asc" checked> Ascending
+            <input type="radio" name="filter-order" id="" value="desc"> Descending -->
+            <input type="hidden" name="filter-order" id="filter-order" value="DESC">
+            <div id="filter-btn" style="display: inline;"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span></div>
             <input type="hidden" name="form_type" value="sort">
-            <input type="submit" value="Filter">
+            <!-- <input type="submit" value="Filter"> -->
         </form>
     </div>
 
@@ -78,6 +70,7 @@
                 </tr>
             </thead>
             <tbody>
+                {{userlist}}
                 {% for i in userlist %}
                     <tr>
                         <td>{{i[1]}}</td>
